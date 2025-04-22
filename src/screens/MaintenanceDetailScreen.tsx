@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,71 +12,92 @@ import {
   SafeAreaView,
   StatusBar,
   Alert,
-} from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import { type RouteProp, useNavigation, useRoute } from "@react-navigation/native"
-import type { StackNavigationProp } from "@react-navigation/stack"
-import type { MaintenanceCertificate } from "../types/data"
-import { mockMaintenanceCertificates } from "../api/mockData"
-import { formatDate, formatCurrency } from "../utils/formatters"
-import { useTheme } from "../context/ThemeContext"
-import type { RootStackParamList } from "../types/navigation"
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import {
+  type RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import type { MaintenanceCertificate } from "../types/data";
+import { mockMaintenanceCertificates } from "../api/mockData";
+import { formatDate, formatCurrency } from "../utils/formatters";
+import { useTheme } from "../context/ThemeContext";
+import type { RootStackParamList } from "../types/navigation";
 
-type MaintenanceDetailRouteProp = RouteProp<RootStackParamList, "MaintenanceDetail">
-type MaintenanceDetailNavigationProp = StackNavigationProp<RootStackParamList, "MaintenanceDetail">
+type MaintenanceDetailRouteProp = RouteProp<
+  RootStackParamList,
+  "MaintenanceDetail"
+>;
+type MaintenanceDetailNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "MaintenanceDetail"
+>;
 
 const MaintenanceDetailScreen = () => {
-  const route = useRoute<MaintenanceDetailRouteProp>()
-  const navigation = useNavigation<MaintenanceDetailNavigationProp>()
-  const { theme } = useTheme()
-  const { id } = route.params
+  const route = useRoute<MaintenanceDetailRouteProp>();
+  const navigation = useNavigation<MaintenanceDetailNavigationProp>();
+  const { theme } = useTheme();
+  const { id } = route.params;
 
-  const [certificate, setCertificate] = useState<MaintenanceCertificate | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [certificate, setCertificate] = useState<MaintenanceCertificate | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCertificateDetails()
-  }, [id])
+    fetchCertificateDetails();
+  }, [id]);
 
   const fetchCertificateDetails = async () => {
     try {
       // In a real app, this would be an API call
       // For now, we'll use mock data
       setTimeout(() => {
-        const foundCertificate = mockMaintenanceCertificates.find((cert) => cert.id === id)
+        const foundCertificate = mockMaintenanceCertificates.find(
+          (cert) => cert.id === id
+        );
         if (foundCertificate) {
-          setCertificate(foundCertificate)
+          setCertificate(foundCertificate);
         }
-        setLoading(false)
-      }, 800)
+        setLoading(false);
+      }, 800);
     } catch (error) {
-      console.error("Error fetching certificate details:", error)
-      setLoading(false)
+      console.error("Error fetching certificate details:", error);
+      setLoading(false);
     }
-  }
+  };
 
   const handleVerifyCertificate = () => {
-    if (!certificate) return
+    if (!certificate) return;
 
-    Alert.alert("Verify Certificate", "This will verify the certificate on the blockchain. Continue?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Verify",
-        onPress: () => {
-          // In a real app, this would call a blockchain verification function
-          Alert.alert("Success", "Certificate verified on blockchain!")
-          setCertificate({
-            ...certificate,
-            blockchainVerified: true,
-            blockchainTxId: "0x" + Math.random().toString(16).slice(2, 10) + Math.random().toString(16).slice(2, 10),
-          })
+    Alert.alert(
+      "Verify Certificate",
+      "This will verify the certificate on the blockchain. Continue?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
         },
-      },
-    ])
-  }
+        {
+          text: "Verify",
+          onPress: () => {
+            // In a real app, this would call a blockchain verification function
+            Alert.alert("Success", "Certificate verified on blockchain!");
+            setCertificate({
+              ...certificate,
+              blockchainVerified: true,
+              blockchainTxId:
+                "0x" +
+                Math.random().toString(16).slice(2, 10) +
+                Math.random().toString(16).slice(2, 10),
+            });
+          },
+        },
+      ]
+    );
+  };
 
   const handleShareCertificate = () => {
     Alert.alert("Share Certificate", "Share this certificate with others?", [
@@ -88,56 +109,76 @@ const MaintenanceDetailScreen = () => {
         text: "Share",
         onPress: () => {
           // In a real app, this would open a share dialog
-          Alert.alert("Success", "Certificate shared successfully!")
+          Alert.alert("Success", "Certificate shared successfully!");
         },
       },
-    ])
-  }
+    ]);
+  };
 
   if (loading) {
     return (
-      <SafeAreaView style={[styles.loadingContainer, { backgroundColor: theme.background }]}>
+      <SafeAreaView
+        style={[styles.loadingContainer, { backgroundColor: theme.background }]}
+      >
         <StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
         <ActivityIndicator size="large" color={theme.primary} />
-        <Text style={[styles.loadingText, { color: theme.textSecondary }]}>Loading certificate details...</Text>
+        <Text style={[styles.loadingText, { color: theme.textSecondary }]}>
+          Loading certificate details...
+        </Text>
       </SafeAreaView>
-    )
+    );
   }
 
   if (!certificate) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.background }]}
+      >
         <StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color={theme.text} />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>Certificate Details</Text>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>
+            Certificate Details
+          </Text>
           <View style={{ width: 24 }} />
         </View>
         <View style={styles.notFoundContainer}>
-          <Ionicons name="document-text-outline" size={64} color={theme.textSecondary} />
-          <Text style={[styles.notFoundText, { color: theme.textSecondary }]}>Certificate not found</Text>
+          <Ionicons
+            name="document-text-outline"
+            size={64}
+            color={theme.textSecondary}
+          />
+          <Text style={[styles.notFoundText, { color: theme.textSecondary }]}>
+            Certificate not found
+          </Text>
           <TouchableOpacity
             style={[styles.backButton, { backgroundColor: theme.primary }]}
             onPress={() => navigation.goBack()}
           >
-            <Text style={[styles.backButtonText, { color: theme.buttonText }]}>Go Back</Text>
+            <Text style={[styles.backButtonText, { color: theme.buttonText }]}>
+              Go Back
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
       <StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color={theme.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>Certificate Details</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>
+          Certificate Details
+        </Text>
         <TouchableOpacity onPress={handleShareCertificate}>
           <Ionicons name="share-outline" size={24} color={theme.text} />
         </TouchableOpacity>
@@ -148,64 +189,109 @@ const MaintenanceDetailScreen = () => {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.certificateCard, { backgroundColor: theme.cardBackground }]}>
+        <View
+          style={[
+            styles.certificateCard,
+            { backgroundColor: theme.cardBackground },
+          ]}
+        >
           <View style={styles.certificateHeader}>
-            <Text style={[styles.certificateTitle, { color: theme.text }]}>{certificate.type}</Text>
+            <Text style={[styles.certificateTitle, { color: theme.text }]}>
+              {certificate.type}
+            </Text>
             <View
               style={[
                 styles.verificationBadge,
-                { backgroundColor: certificate.blockchainVerified ? theme.success : theme.warning },
+                {
+                  backgroundColor: certificate.blockchainVerified
+                    ? theme.success
+                    : theme.warning,
+                },
               ]}
             >
-              <Text style={styles.verificationText}>{certificate.blockchainVerified ? "Verified" : "Pending"}</Text>
+              <Text style={styles.verificationText}>
+                {certificate.blockchainVerified ? "Verified" : "Pending"}
+              </Text>
             </View>
           </View>
 
           <View style={styles.certificateImage}>
-            <Image source={require("../../assets/car-maintenance.png")} style={styles.image} resizeMode="cover" />
+            {/* <Image source={require("../../assets/car-maintenance.png")} style={styles.image} resizeMode="cover" /> */}
           </View>
 
           <View style={styles.sectionContainer}>
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>Certificate Information</Text>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>
+              Certificate Information
+            </Text>
 
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>Date</Text>
-              <Text style={[styles.infoValue, { color: theme.text }]}>{formatDate(certificate.date)}</Text>
+              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>
+                Date
+              </Text>
+              <Text style={[styles.infoValue, { color: theme.text }]}>
+                {formatDate(certificate.date)}
+              </Text>
             </View>
 
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>Vehicle</Text>
-              <Text style={[styles.infoValue, { color: theme.text }]}>{certificate.carName}</Text>
+              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>
+                Vehicle
+              </Text>
+              <Text style={[styles.infoValue, { color: theme.text }]}>
+                {certificate.carName}
+              </Text>
             </View>
 
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>Service Provider</Text>
-              <Text style={[styles.infoValue, { color: theme.text }]}>{certificate.serviceProvider}</Text>
+              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>
+                Service Provider
+              </Text>
+              <Text style={[styles.infoValue, { color: theme.text }]}>
+                {certificate.serviceProvider}
+              </Text>
             </View>
 
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>Odometer</Text>
-              <Text style={[styles.infoValue, { color: theme.text }]}>{certificate.odometer} km</Text>
+              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>
+                Odometer
+              </Text>
+              <Text style={[styles.infoValue, { color: theme.text }]}>
+                {certificate.odometer} km
+              </Text>
             </View>
 
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>Cost</Text>
-              <Text style={[styles.infoValue, { color: theme.text }]}>{formatCurrency(certificate.cost)}</Text>
+              <Text style={[styles.infoLabel, { color: theme.textSecondary }]}>
+                Cost
+              </Text>
+              <Text style={[styles.infoValue, { color: theme.text }]}>
+                {formatCurrency(certificate.cost)}
+              </Text>
             </View>
           </View>
 
           <View style={styles.sectionContainer}>
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>Service Details</Text>
-            <Text style={[styles.descriptionText, { color: theme.text }]}>{certificate.description}</Text>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>
+              Service Details
+            </Text>
+            <Text style={[styles.descriptionText, { color: theme.text }]}>
+              {certificate.description}
+            </Text>
           </View>
 
           {certificate.parts && certificate.parts.length > 0 && (
             <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle, { color: theme.text }]}>Parts Replaced</Text>
+              <Text style={[styles.sectionTitle, { color: theme.text }]}>
+                Parts Replaced
+              </Text>
               {certificate.parts.map((part, index) => (
                 <View key={index} style={styles.partItem}>
-                  <Text style={[styles.partName, { color: theme.text }]}>{part.name}</Text>
-                  <Text style={[styles.partInfo, { color: theme.textSecondary }]}>
+                  <Text style={[styles.partName, { color: theme.text }]}>
+                    {part.name}
+                  </Text>
+                  <Text
+                    style={[styles.partInfo, { color: theme.textSecondary }]}
+                  >
                     {part.partNumber} • {formatCurrency(part.cost)}
                   </Text>
                 </View>
@@ -215,22 +301,51 @@ const MaintenanceDetailScreen = () => {
 
           {certificate.blockchainVerified && certificate.blockchainTxId && (
             <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle, { color: theme.text }]}>Blockchain Verification</Text>
+              <Text style={[styles.sectionTitle, { color: theme.text }]}>
+                Blockchain Verification
+              </Text>
               <View style={styles.blockchainContainer}>
-                <Ionicons name="checkmark-circle" size={20} color={theme.success} />
-                <Text style={[styles.blockchainText, { color: theme.text }]}>Verified on Blockchain</Text>
+                <Ionicons
+                  name="checkmark-circle"
+                  size={20}
+                  color={theme.success}
+                />
+                <Text style={[styles.blockchainText, { color: theme.text }]}>
+                  Verified on Blockchain
+                </Text>
               </View>
-              <View style={[styles.txIdContainer, { backgroundColor: theme.backgroundSecondary }]}>
-                <Text style={[styles.txIdLabel, { color: theme.textSecondary }]}>Transaction ID:</Text>
-                <Text style={[styles.txId, { color: theme.primary }]}>{certificate.blockchainTxId}</Text>
+              <View
+                style={[
+                  styles.txIdContainer,
+                  { backgroundColor: theme.backgroundSecondary },
+                ]}
+              >
+                <Text
+                  style={[styles.txIdLabel, { color: theme.textSecondary }]}
+                >
+                  Transaction ID:
+                </Text>
+                <Text style={[styles.txId, { color: theme.primary }]}>
+                  {certificate.blockchainTxId}
+                </Text>
               </View>
               <TouchableOpacity
-                style={[styles.viewOnExplorerButton, { borderColor: theme.primary }]}
+                style={[
+                  styles.viewOnExplorerButton,
+                  { borderColor: theme.primary },
+                ]}
                 onPress={() =>
-                  Alert.alert("View on Explorer", "This would open the blockchain explorer in a real app.")
+                  Alert.alert(
+                    "View on Explorer",
+                    "This would open the blockchain explorer in a real app."
+                  )
                 }
               >
-                <Text style={[styles.viewOnExplorerText, { color: theme.primary }]}>View on Blockchain Explorer</Text>
+                <Text
+                  style={[styles.viewOnExplorerText, { color: theme.primary }]}
+                >
+                  View on Blockchain Explorer
+                </Text>
                 <Ionicons name="open-outline" size={16} color={theme.primary} />
               </TouchableOpacity>
             </View>
@@ -242,14 +357,22 @@ const MaintenanceDetailScreen = () => {
             style={[styles.verifyButton, { backgroundColor: theme.primary }]}
             onPress={handleVerifyCertificate}
           >
-            <Ionicons name="shield-checkmark-outline" size={20} color={theme.buttonText} />
-            <Text style={[styles.verifyButtonText, { color: theme.buttonText }]}>Verify on Blockchain</Text>
+            <Ionicons
+              name="shield-checkmark-outline"
+              size={20}
+              color={theme.buttonText}
+            />
+            <Text
+              style={[styles.verifyButtonText, { color: theme.buttonText }]}
+            >
+              Verify on Blockchain
+            </Text>
           </TouchableOpacity>
         )}
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -428,6 +551,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-})
+});
 
-export default MaintenanceDetailScreen
+export default MaintenanceDetailScreen;
