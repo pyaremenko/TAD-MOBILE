@@ -27,8 +27,8 @@ export default function AddCarScreen() {
 
     // Simulate API call
     setTimeout(() => {
-      setLoading(false)
-      navigation.navigate("Cars")
+      setLoading(false);
+      navigation.pop();
     }, 1500)
   }
 

@@ -18,6 +18,7 @@ import RewardsScreen from "../screens/RewardsScreen";
 // import SettingsScreen from "../screens/SettingsScreen";
 
 import type { RootStackParamList, MainTabParamList } from "../types/navigation";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -93,19 +94,7 @@ const AppNavigator = () => {
   const { theme } = useTheme();
 
   return (
-    <NavigationContainer
-      theme={{
-        dark: theme.dark,
-        colors: {
-          primary: theme.primary,
-          background: theme.background,
-          card: theme.cardBackground,
-          text: theme.text,
-          border: theme.border,
-          notification: theme.primary,
-        },
-      }}
-    >
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -122,7 +111,7 @@ const AppNavigator = () => {
         <Stack.Screen name="AddMaintenance" component={AddMaintenanceScreen} />
         {/* <Stack.Screen name="Settings" component={SettingsScreen} /> */}
       </Stack.Navigator>
-    </NavigationContainer>
+    </SafeAreaView>
   );
 };
 

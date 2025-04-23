@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
-import { getMockUser } from "../api/mockData"
+import { getMockUser, mockUserPoints } from "../api/mockData"
 import { spacing, borderRadius } from "../theme"
 import type { RootStackParamList } from "../types/navigation"
 
@@ -18,7 +18,7 @@ interface PointsSummaryCardProps {
 export function PointsSummaryCard({ style }: PointsSummaryCardProps) {
   const theme = useTheme()
   const navigation = useNavigation<PointsSummaryCardNavigationProp>()
-  const user = getMockUser()
+  const userPoints = mockUserPoints;
 
   const handlePress = () => {
     navigation.navigate("Rewards")
@@ -29,7 +29,7 @@ export function PointsSummaryCard({ style }: PointsSummaryCardProps) {
       <Surface style={[styles.card, { backgroundColor: theme.colors.tertiary }]} elevation={2}>
         <View style={styles.content}>
           <Icon name="trophy" size={32} color="white" style={styles.icon} />
-          <Text style={styles.pointsValue}>{user.points}</Text>
+          <Text style={styles.pointsValue}>{userPoints}</Text>
           <Text style={styles.pointsLabel}>Reward Points</Text>
         </View>
       </Surface>

@@ -30,6 +30,12 @@ export const mockCars = [
     healthScore: 92,
     image: "https://example.com/car1.jpg",
     status: "active",
+    engineHealth: 85,
+    batteryHealth: 90,
+    brakeHealth: 95,
+    transmissionHealth: 80,
+    tireHealth: 88,
+    oilLife: 90,
   },
   {
     id: "car2",
@@ -47,8 +53,25 @@ export const mockCars = [
     healthScore: 85,
     image: "https://example.com/car2.jpg",
     status: "active",
+    engineHealth: 80,
+    batteryHealth: 85,
+    brakeHealth: 92,
+    transmissionHealth: 75,
+    tireHealth: 80,
+    oilLife: 87,
   },
 ]
+
+// Function to get mock cars data
+export const getMockCars = (userId?: string) => {
+  // If userId is provided, filter cars by the userId
+  if (userId) {
+    return mockCars.filter(car => car.userId === userId);
+  }
+  
+  // If no userId is provided, return all mock cars
+  return mockCars;
+};
 
 // OBD data
 export const mockObdData = [
@@ -300,3 +323,25 @@ export const mockPointsHistory = [
     relatedEntityId: "reward3",
   },
 ]
+
+export const getMockUser = () => {
+  return mockUser;
+};
+
+export const getMockCertificates = (carId?: string) => {
+  if (carId) return mockMaintenanceCertificates.filter(cert => cert.carId === carId);
+  return mockMaintenanceCertificates;
+};
+
+export const getMockCarById = (carId: string) => {
+  // Find and return the car with the specified carId
+  return mockCars.find(car => car.id === carId) || null;
+};
+
+export const getMockCertificatesByCar = (carId: string) => {
+  return mockMaintenanceCertificates.filter(cert => cert.carId === carId);
+};
+
+export const getMockOBDData = (carId: string) => {
+  return mockObdData.filter(obd => obd.carId === carId);
+};

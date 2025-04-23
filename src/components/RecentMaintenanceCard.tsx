@@ -25,6 +25,7 @@ export function RecentMaintenanceCard() {
   }
 
   const handleCertificatePress = (certificate: MaintenanceCertificate) => {
+    // TODO: CertificateDetailScreen
     navigation.navigate("CertificateDetail", { certificate })
   }
 

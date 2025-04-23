@@ -25,18 +25,31 @@ export function CarOBDData({ carId }: CarOBDDataProps) {
     )
   }
 
+  // Function to clean data and ensure no NaN values
+  const cleanData = (data: any[] | null | undefined) => {
+    if (!data) return []
+    return data.map((point) => {
+      const validPoint = { ...point }
+      // Ensure that NaN values are replaced with 0 or other defaults
+      if (isNaN(validPoint.value)) validPoint.value = 0
+      return validPoint
+    })
+  }
+
   // Prepare chart data
   const prepareChartData = (dataPoints: any[] | null | undefined, label: string) => {
-    if (!dataPoints) return null
+    const cleanedData = cleanData(dataPoints)
+
+    if (cleanedData.length === 0) return null
 
     return {
-      labels: dataPoints.map((point) => {
+      labels: cleanedData.map((point) => {
         const date = new Date(point.timestamp)
         return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`
       }),
       datasets: [
         {
-          data: dataPoints.map((point) => point.value),
+          data: cleanedData.map((point) => point.value),
           color: () => theme.colors.primary,
           strokeWidth: 2,
         },
@@ -45,11 +58,11 @@ export function CarOBDData({ carId }: CarOBDDataProps) {
     }
   }
 
-  const speedData = prepareChartData(obdData.speed, "Speed (km/h)")
-  const rpmData = prepareChartData(obdData.engineRPM, "Engine RPM")
-  const tempData = prepareChartData(obdData.coolantTemp, "Coolant Temp (°F)")
-  const fuelData = prepareChartData(obdData.fuelLevel, "Fuel Level (%)")
-  const batteryData = prepareChartData(obdData.batteryLevel, "Battery Level (%)")
+  const speedData = prepareChartData(obdData.map(item => ({ timestamp: item.timestamp, value: item.speed })), "Speed (km/h)");
+  const rpmData = prepareChartData(obdData.map(item => ({ timestamp: item.timestamp, value: item.rpm })), "Engine RPM");
+  const tempData = prepareChartData(obdData.map(item => ({ timestamp: item.timestamp, value: item.coolantTemp })), "Coolant Temp (°F)");
+  const fuelData = prepareChartData(obdData.map(item => ({ timestamp: item.timestamp, value: item.fuelLevel })), "Fuel Level (%)");
+  const batteryData = prepareChartData(obdData.map(item => ({ timestamp: item.timestamp, value: item.batteryVoltage })), "Battery Voltage (V)");
 
   const chartConfig = {
     backgroundColor: theme.colors.surface,
@@ -158,7 +171,6 @@ const styles = StyleSheet.create({
   },
   chart: {
     borderRadius: borderRadius.md,
-    paddingRight: spacing.md,
   },
   emptyContainer: {
     alignItems: "center",
